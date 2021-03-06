@@ -1,0 +1,19 @@
+@import './variables.scss';
+
+* {
+	margin: 0;
+	font-size: 10px;
+	box-sizing: border-box;
+};
+
+.app {
+	@include fill-screen-bottomless;
+	background: url('./assets/thom-milkovic-FTNGfpYCpGM-unsplash.jpg');
+	background-size: cover;
+	background-position: right 70%;
+	background-repeat: no-repeat;
+
+	@include small-media {
+		background-position: 95% bottom;
+	}
+}

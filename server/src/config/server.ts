@@ -18,7 +18,7 @@ const options: cors.CorsOptions = {
   credentials: true,
   methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
   origin: process.env.HEROKU_URL || 'http://localhost:3000',
-  preflightContinue: false,
+  preflightContinue: false
 }
 
 app.use(express.json())

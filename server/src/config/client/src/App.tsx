@@ -1,43 +1,83 @@
-import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import logo from './logo.svg'
-import './App.css'
+import React, { useEffect, useReducer } from 'react'
+
+import './App.scss'
+import MessageBanner from './components/MessageBanner'
+
+export const baseURL = process.env.REACT_APP_HEROKU_URL || 'http://localhost:5000'
+
+
+interface WelcomeState {
+  loading: boolean,
+  message: string
+}
+
+type WelcomeAction =
+  | { type: 'FETCH_SUCCESS', message: string }
+  | { type: 'FETCH_ERROR' }
+
+const initialWelcomeState = {
+  loading: true,
+  message: ""
+}
+
+export const GlobalContext = React.createContext<{
+  state: WelcomeState;
+  dispatch: React.Dispatch<any>;
+}>({
+  state: initialWelcomeState,
+  dispatch: () => null
+})
+
+const welcomeReducer = (state: WelcomeState, action: WelcomeAction) => {
+  switch (action.type) {
+    case 'FETCH_SUCCESS':
+      return {
+        loading: false,
+        message: action.message
+      }
+    case 'FETCH_ERROR':
+      return {
+        loading: false,
+        message: 'Something went wrong!'
+      }
+    default:
+      return state
+  }
+}
 
 function App() {
-  const [message, setMessage] = useState('loading')
+  const [welcomeState, welcomeDispatch] = useReducer(welcomeReducer, initialWelcomeState)
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/hello')
+    axios.get(`${baseURL}/api/hello`)
       .then(res => {
-        setMessage(res.data.message)
+        welcomeDispatch({
+          type: 'FETCH_SUCCESS',
+          message: res.data.message
+        })
       })
       .catch(err => {
-        if (err) {
-          console.error(err)
-          setMessage("Error!")
-        }
+        console.error(err)
+        welcomeDispatch({
+          type: 'FETCH_ERROR'
+        })
       })
   }, [])
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>{message}</p>
-      </header>
+    <div className="app">
+      App
+      <GlobalContext.Provider
+        value={{
+          state: welcomeState,
+          dispatch: welcomeDispatch
+        }}
+      >
+        <MessageBanner />
+      </GlobalContext.Provider>
     </div>
   )
 }
 
-export default App;
+export default App
