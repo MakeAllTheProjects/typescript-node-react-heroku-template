@@ -6,6 +6,8 @@
   "author": "Meghan Bomberger <meghanbomberger@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/cors": "^2.8.10",
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.31",
     "cors": "^2.8.5",
@@ -23,9 +25,5 @@
     "dev": "nodemon -x ts-node server/src/config/server.ts",
     "heroku-postbuild": "cd client && yarn install && yarn build --prod",
     "start": "ts-node server/src/config/server.ts"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.10",
-    "@types/dotenv": "^8.2.0"
   }
 }
