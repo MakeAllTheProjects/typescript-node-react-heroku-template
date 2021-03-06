@@ -7,27 +7,22 @@ import serveStatic from 'serve-static'
 
 const app = express()
 
-const whitelist = [
-  'localhost:3000',
-  `localhost:${process.env.PORT || 5000}`,
-  process.env.HEROKU_URL
-]
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    console.log("** Origin of request " + origin.headers.host)
-    if (whitelist.indexOf(origin.headers.host) !== -1 || !origin) {
-      console.log("Origin acceptable")
-      callback(null, true)
-    } else {
-      console.log("Origin rejected")
-      callback(new Error('Not allowed by CORS - ' + origin.headers.host))
-    }
-  }
+const options: cors.CorsOptions = {
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'X-Access-Token',
+  ],
+  credentials: true,
+  methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+  origin: process.env.HEROKU_URL || `http://localhost:${process.env.PORT || 3000}`,
+  preflightContinue: false,
 }
 
 app.use(express.json())
-app.use(cors(corsOptions.origin))
+app.use(cors(options))
 app.use(serveStatic(__dirname + '/client/build'))
 
 app.get("/api/hello", (req, res) => {
@@ -42,6 +37,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(
-  process.env.PORT || 4000,
-  () => console.log(`Server listening on port ${process.env.PORT || 4000}`)
+  process.env.PORT || 3000,
+  () => console.log(`Server listening on port ${process.env.PORT || 3000}`)
 )
